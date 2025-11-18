@@ -28,7 +28,7 @@ export default function App() {
     return newGrid;
   };
   const grid = gridMaker(sheet());
-  console.log(grid);
+  console.table(grid);
 
   function handleFocusOut(data: FocusEvent) {
     console.log(data);

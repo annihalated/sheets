@@ -53,4 +53,12 @@ export class Sheet {
     }
     return { x: maxX, y: maxY };
   }
+
+  clone(): Sheet {
+    const next = new Sheet();
+    for (const cell of this.cells.values()) {
+      next.set(cell.position.x, cell.position.y, cell.value);
+    }
+    return next;
+  }
 }

@@ -1,8 +1,9 @@
 import { createSignal, For, Index } from "solid-js";
 import { Sheet, Cell } from "./sheet";
+import { createMemo } from "solid-js";
 
 export default function App() {
-  const [sheet] = createSignal(new Sheet());
+  const [sheet, setSheet] = createSignal(new Sheet());
   const message = "Hi, these values have been programmatically set";
   message.split(" ").forEach((word, i) => {
     sheet().set(i, i, word);
@@ -27,25 +28,30 @@ export default function App() {
 
     return newGrid;
   };
-  const grid = gridMaker(sheet());
+  const grid = createMemo(() => gridMaker(sheet()));
   console.table(grid);
 
-  function handleFocusOut(data: FocusEvent) {
-    console.log(data);
-    console.log(data.srcElement);
+  function handleFocusOut(e: FocusEvent, r: number, c: number) {
+    const value = (e.currentTarget as HTMLInputElement).value;
+
+    const next = sheet().clone();
+
+    next.set(r, c, value);
+    setSheet(next);
+    console.table(grid());
   }
   return (
     <div class="m-auto min-w-fit container">
       <table class="border-collapse table-fixed m-auto">
         <tbody>
-          <For each={grid}>
-            {(row) => (
+          <For each={grid()}>
+            {(row, r) => (
               <tr>
                 <For each={row}>
-                  {(cell) => (
+                  {(cell, c) => (
                     <td class="border border-gray-400 p-2 text-sm">
                       <input
-                        onFocusOut={handleFocusOut}
+                        onFocusOut={(e) => handleFocusOut(e, r(), c())}
                         value={cell?.toString()}
                       ></input>
                     </td>

@@ -29,7 +29,7 @@ export default function App() {
     return newGrid;
   };
   const grid = createMemo(() => gridMaker(sheet()));
-  console.table(grid);
+  console.table(grid());
 
   function handleFocusOut(e: FocusEvent, r: number, c: number) {
     const value = (e.currentTarget as HTMLInputElement).value;
